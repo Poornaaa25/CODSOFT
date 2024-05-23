@@ -1,0 +1,65 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+public class WordCounter {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter 'text' to enter text manually or 'file' to provide a file:");
+        String inputMethod = scanner.nextLine().trim().toLowerCase();
+
+        String text = "";
+
+        if (inputMethod.equals("text")) {
+            System.out.println("Enter the text:");
+            text = scanner.nextLine();
+        } else if (inputMethod.equals("file")) {
+            System.out.println("Enter the file path:");
+            String filePath = scanner.nextLine();
+            try {
+                File file = new File(filePath);
+                Scanner fileScanner = new Scanner(file);
+                while (fileScanner.hasNextLine()) {
+                    text += fileScanner.nextLine() + " ";
+                }
+                fileScanner.close();
+            } catch (FileNotFoundException e) {
+                System.out.println("File not found.");
+                return;
+            }
+        } else {
+            System.out.println("Invalid input method. Please enter 'text' or 'file'.");
+            return;
+        }
+
+        // Remove punctuation and convert text to lowercase
+        text = text.replaceAll("[^a-zA-Z ]", "").toLowerCase();
+
+        // Split the text into words
+        String[] words = text.split("\\s+");
+
+        // Initialize a map to store word frequencies
+        Map<String, Integer> wordFrequency = new HashMap<>();
+
+        // Count words and store frequencies
+        for (String word : words) {
+            wordFrequency.put(word, wordFrequency.getOrDefault(word, 0) + 1);
+        }
+
+        // Display total word count
+        System.out.println("Total words: " + words.length);
+
+        // Display unique word count
+        System.out.println("Unique words: " + wordFrequency.size());
+
+        // Display word frequencies
+        System.out.println("Word frequencies:");
+        for (Map.Entry<String, Integer> entry : wordFrequency.entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        }
+
+        scanner.close();
+    }
+}
